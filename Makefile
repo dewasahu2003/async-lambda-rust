@@ -1,24 +1,21 @@
-rust-version:
-	@echo "Rust command-line utility versions:"
-	rustc --version 			#rust compiler
-	cargo --version 			#rust package manager
-	rustfmt --version			#rust code formatter
-	rustup --version			#rust toolchain manager
-	clippy-driver --version		#rust linter
-
 format:
-	cargo fmt 
+	cargo fmt
 
 lint:
 	cargo clippy 
-
-test:
-	cargo test --quiet
-
 run:
-	cargo run
+	cargo run 
 
 release:
-	cargo build --release
+	cargo lambda build --release
+
+deploy:
+	cargo lambda deploy s3l --profile admin-2 -r us-east-1 
+
+invoke:
+	cargo lambda invoke --remote \
+  		--data-ascii '{"name": "count"}' \
+  		--output-format json \
+  		s3l --profile admin-2 -r us-east-1 --verbose
 
 all: format lint test run
